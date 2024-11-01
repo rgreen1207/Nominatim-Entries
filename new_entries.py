@@ -4,7 +4,6 @@ import osmium.osm
 from uuid import uuid4
 from datetime import datetime, timezone
 
-from database.db_models import AddressesDB
 from .new_entry_models import NewNominatimEntry
 from .normalization import AddressNormalization
 
@@ -35,10 +34,7 @@ class NewEntryXMLActions:
 
     @classmethod
     async def populate_entry(cls, data, entry_id):
-        if type(data) == AddressesDB:
-            data = AddressNormalization.parsed_street_to_model(data, AddressNormalization.parse_address(data.full_searchable))
-        else:
-            data = AddressNormalization.parsed_street_to_model(data, AddressNormalization.parse_address(data.create_full_str()))
+        data = AddressNormalization.parsed_street_to_model(data, AddressNormalization.parse_address(data.create_full_str()))
         newEntry = osmium.osm.mutable.Node(
             timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
             id = entry_id,
@@ -54,18 +50,9 @@ class NewEntryXMLActions:
     @staticmethod
     def set_tags(data):
         tagList = []
-        if type(data) == NewNominatimEntry:
-            for key, value in data.__dict__.items():
-                if key in ['street', 'housenumber', 'unit', 'city', 'state', 'postcode', 'country']:
-                    tagList.append(osmium.osm.Tag(f"addr:{key}", str(value)))
-        elif type(data) == AddressesDB:
-            data.country = "US" if data.country == None else data.country
-            data.state = AddressNormalization.CODE_TO_STATE[data.state]
-            for key, value in data.__dict__.items():
-                if key in key in ['housenumber', 'street', 'city', 'state', 'country']:
-                    tagList.append(osmium.osm.Tag(f"addr:{key}", str(value)))
-                elif key == 'zip_code':
-                    tagList.append(osmium.osm.Tag(f"addr:postcode", str(value)))
+        for key, value in data.__dict__.items():
+            if key in ['street', 'housenumber', 'unit', 'city', 'state', 'postcode', 'country']:
+                tagList.append(osmium.osm.Tag(f"addr:{key}", str(value)))
         return tagList
     
 
