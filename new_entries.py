@@ -5,7 +5,7 @@ from uuid import uuid4
 from datetime import datetime, timezone
 
 from database.db_models import AddressesDB
-from api.osm_imports.models.new_entry_models import NewNominatimEntry
+from .new_entry_models import NewNominatimEntry
 from api.address_lookups.helpers.normalization import AddressNormalization
 
 
