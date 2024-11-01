@@ -4,7 +4,6 @@ import osmium.osm
 from uuid import uuid4
 from datetime import datetime, timezone
 
-from .new_entry_models import NewNominatimEntry
 from .normalization import AddressNormalization
 
 
