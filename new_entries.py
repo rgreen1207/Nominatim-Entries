@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from database.db_models import AddressesDB
 from .new_entry_models import NewNominatimEntry
-from api.address_lookups.helpers.normalization import AddressNormalization
+from .normalization import AddressNormalization
 
 
 class NewEntryXMLActions:
